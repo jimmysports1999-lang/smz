@@ -1,1 +1,435 @@
 # smz
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>S.M.Z Experience Camp Taiwan｜吉旻運動</title>
+  <meta name="description" content="前大聯盟球員來台訓練營，與職業球員一起訓練，體驗真正的美式營隊訓練與職業棒球文化。" />
+  <style>
+    :root{
+      --black:#050505;
+      --dark:#0b0b0b;
+      --card:#121212;
+      --gold:#D8A94A;
+      --gold2:#FFE08A;
+      --white:#F7F7F7;
+      --muted:#B8B8B8;
+      --line:rgba(216,169,74,.35);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:var(--black);
+      color:var(--white);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;
+      line-height:1.7;
+    }
+    a{text-decoration:none;color:inherit}
+    img{display:block;max-width:100%}
+
+    .nav{
+      position:fixed;
+      top:0;left:0;right:0;
+      z-index:50;
+      padding:14px 6vw;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      background:linear-gradient(180deg,rgba(0,0,0,.82),rgba(0,0,0,.05));
+      backdrop-filter:blur(8px);
+    }
+    .brand{font-weight:900;letter-spacing:.06em;color:var(--gold2)}
+    .nav a.btn-mini{
+      padding:8px 15px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#111;
+      font-weight:900;
+      font-size:14px;
+    }
+
+    .hero{
+      min-height:100vh;
+      padding:120px 6vw 70px;
+      display:grid;
+      align-items:end;
+      background:
+        linear-gradient(180deg,rgba(0,0,0,.08),rgba(0,0,0,.95)),
+        url("banner.png") center/cover no-repeat;
+    }
+    .hero-content{
+      max-width:820px;
+      padding:30px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.70);
+      border-radius:28px;
+      box-shadow:0 30px 90px rgba(0,0,0,.48);
+      backdrop-filter:blur(10px);
+    }
+    .eyebrow{
+      display:inline-block;
+      padding:7px 14px;
+      border-radius:999px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2));
+      color:#111;
+      font-size:13px;
+      font-weight:1000;
+      letter-spacing:.1em;
+      margin-bottom:14px;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(46px,8vw,96px);
+      line-height:.92;
+      letter-spacing:.02em;
+    }
+    h1 span{color:var(--gold2)}
+    .hero h2{
+      margin:18px 0 8px;
+      font-size:clamp(22px,3vw,34px);
+      line-height:1.25;
+    }
+    .lead{
+      max-width:720px;
+      margin:0 0 24px;
+      color:var(--muted);
+      font-size:18px;
+    }
+    .buttons{display:flex;gap:14px;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:50px;
+      padding:12px 24px;
+      border-radius:999px;
+      border:1px solid var(--gold);
+      font-weight:950;
+      transition:.25s;
+    }
+    .btn:hover{transform:translateY(-2px)}
+    .primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111}
+    .secondary{background:rgba(255,255,255,.06);color:var(--white)}
+
+    section{padding:86px 6vw}
+    .wrap{max-width:1180px;margin:0 auto}
+    .section-title{
+      margin:0 0 14px;
+      font-size:clamp(32px,5vw,60px);
+      line-height:1.05;
+      letter-spacing:-.03em;
+    }
+    .section-title span{color:var(--gold2)}
+    .desc{
+      max-width:850px;
+      margin:0 0 36px;
+      color:var(--muted);
+      font-size:18px;
+    }
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    .stat{
+      border:1px solid var(--line);
+      border-radius:22px;
+      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+      padding:28px 18px;
+      text-align:center;
+    }
+    .stat strong{
+      display:block;
+      font-size:44px;
+      line-height:1;
+      color:var(--gold2);
+      margin-bottom:10px;
+    }
+    .features{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    .feature{
+      padding:24px;
+      border-radius:22px;
+      background:rgba(255,255,255,.045);
+      border:1px solid rgba(255,255,255,.08);
+      border-left:4px solid var(--gold);
+    }
+    .feature b{
+      display:block;
+      color:var(--gold2);
+      font-size:20px;
+      margin-bottom:6px;
+    }
+
+    .players{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:20px;
+    }
+    .player{
+      min-height:260px;
+      padding:30px;
+      border-radius:28px;
+      background:
+        radial-gradient(circle at top right,rgba(216,169,74,.20),transparent 45%),
+        linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));
+      border:1px solid var(--line);
+    }
+    .player h3{
+      margin:0 0 4px;
+      font-size:38px;
+      color:var(--gold2);
+      line-height:1.1;
+    }
+    .player .role{font-weight:900;margin-bottom:16px}
+    .player p{color:var(--muted);margin:0}
+
+    .schedule{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    .slot{
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:24px;
+      background:#101010;
+    }
+    .day{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      background:var(--gold);
+      color:#111;
+      font-weight:1000;
+      font-size:13px;
+      margin-bottom:12px;
+    }
+    .slot h3{font-size:30px;margin:0;line-height:1.1}
+    .age{color:var(--gold2);font-weight:900;margin:6px 0 14px}
+    .slot p{color:var(--muted);margin:5px 0}
+
+    .gallery{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+    }
+    figure{
+      margin:0;
+      overflow:hidden;
+      border-radius:24px;
+      border:1px solid var(--line);
+      background:#111;
+    }
+    figure img{
+      width:100%;
+      height:310px;
+      object-fit:cover;
+      transition:.35s;
+    }
+    figure:hover img{transform:scale(1.04)}
+    figcaption{
+      padding:16px;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .cta{
+      text-align:center;
+      background:
+        radial-gradient(circle at center,rgba(216,169,74,.23),transparent 58%),
+        #050505;
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+    .cta h2{
+      margin:0 0 10px;
+      font-size:clamp(42px,7vw,88px);
+      line-height:.95;
+    }
+    .cta p{color:var(--muted);font-size:20px;margin:0 0 26px}
+    .note{
+      margin:30px auto 0;
+      max-width:920px;
+      padding-top:18px;
+      border-top:1px solid rgba(255,255,255,.12);
+      color:#aaa;
+      font-size:14px;
+    }
+    footer{
+      padding:42px 6vw;
+      text-align:center;
+      background:#030303;
+      color:#aaa;
+    }
+    footer h3{color:var(--gold2);margin:0 0 6px}
+    footer a{color:var(--gold2);text-decoration:underline}
+
+    @media(max-width:1000px){
+      .stats,.features,.schedule,.gallery{grid-template-columns:1fr 1fr}
+      .players{grid-template-columns:1fr}
+    }
+    @media(max-width:680px){
+      .nav{padding:12px 18px}
+      .hero{min-height:760px;padding:110px 20px 42px}
+      .hero-content{padding:22px;border-radius:22px}
+      section{padding:66px 20px}
+      .stats,.features,.schedule,.gallery{grid-template-columns:1fr}
+      figure img{height:360px}
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="brand">JIMMY SPORTS</div>
+    <a class="btn-mini" href="https://docs.google.com/forms/d/e/1FAIpQLSfGe0UzhiFdMNaYKfXbW7JRJFDdC_e1-txsDZzxKuCSygeO1g/viewform" target="_blank">立即報名</a>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-content">
+      <div class="eyebrow">FORMER MAJOR LEAGUE PLAYERS</div>
+      <h1>S.M.Z <span>EXPERIENCE CAMP</span></h1>
+      <h2>Train With Former Major League Players</h2>
+      <p class="lead">前大聯盟球員來台訓練營。與職業球員一起訓練，體驗真正的美式營隊訓練與棒球文化。</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfGe0UzhiFdMNaYKfXbW7JRJFDdC_e1-txsDZzxKuCSygeO1g/viewform" target="_blank">立即報名</a>
+        <a class="btn secondary" href="mailto:jim.mysports1999@gmail.com">聯絡我們</a>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <h2 class="section-title">從台灣出發，<span>體驗真正的美式棒球</span></h2>
+      <p class="desc">本活動由吉旻運動規劃，邀請具備大聯盟經歷的職業球員來台，透過技術指導、營隊訓練、經驗分享與近距離互動，幫助學員建立更高層級的棒球視野。</p>
+      <div class="stats">
+        <div class="stat"><strong>300+</strong>學員參與</div>
+        <div class="stat"><strong>2</strong>位前大聯盟球員</div>
+        <div class="stat"><strong>5</strong>個國家交流經驗</div>
+        <div class="stat"><strong>10+</strong>國際棒球活動</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="section-title">活動<span>特色</span></h2>
+      <div class="features">
+        <div class="feature"><b>國際視野</b>拓展孩子的國際舞台</div>
+        <div class="feature"><b>美式營隊訓練</b>體驗專業美式訓練模式</div>
+        <div class="feature"><b>合照與簽名</b>與球星近距離互動</div>
+        <div class="feature"><b>職業球員分享</b>激發夢想與目標</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="section-title">指導<span>球員</span></h2>
+      <div class="players">
+        <div class="player">
+          <h3>Jay Jackson</h3>
+          <div class="role">Former Major League Pitcher</div>
+          <p>Minnesota Twins｜San Francisco Giants｜Milwaukee Brewers｜Toronto Blue Jays</p>
+        </div>
+        <div class="player">
+          <h3>Trayvon Robinson</h3>
+          <div class="role">Former Major League Outfielder</div>
+          <p>Seattle Mariners｜Los Angeles Dodgers Organization</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="schedule">
+    <div class="wrap">
+      <h2 class="section-title">活動<span>梯次</span></h2>
+      <p class="desc">名額有限，依完成報名順序錄取。</p>
+      <div class="schedule">
+        <div class="slot">
+          <div class="day">DAY 1</div>
+          <h3>U12 組</h3>
+          <div class="age">11–12歲</div>
+          <p>2026/12/5（六）</p>
+          <p>09:00–12:00</p>
+        </div>
+        <div class="slot">
+          <div class="day">DAY 1</div>
+          <h3>U15 組</h3>
+          <div class="age">13–15歲</div>
+          <p>2026/12/5（六）</p>
+          <p>13:00–16:00</p>
+        </div>
+        <div class="slot">
+          <div class="day">DAY 2</div>
+          <h3>U18 組</h3>
+          <div class="age">16–18歲</div>
+          <p>2026/12/6（日）</p>
+          <p>09:00–12:00</p>
+        </div>
+        <div class="slot">
+          <div class="day">DAY 2</div>
+          <h3>球員簽名會</h3>
+          <div class="age">限定活動</div>
+          <p>2026/12/6（日）</p>
+          <p>13:00–15:00</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2 class="section-title">真實<span>活動紀錄</span></h2>
+      <p class="desc">從過往活動照片中，看見前職業球員與台灣學員近距離互動、指導與交流的現場氛圍。</p>
+      <div class="gallery">
+        <figure>
+          <img src="photo_01.jpeg" alt="前職業球員與小球員互動訓練">
+          <figcaption>近距離互動，讓孩子感受職業球員的熱情。</figcaption>
+        </figure>
+        <figure>
+          <img src="photo_02.jpeg" alt="Jay Jackson 指導投球姿勢">
+          <figcaption>投手訓練與姿勢調整，學習更有效率的身體使用。</figcaption>
+        </figure>
+        <figure>
+          <img src="photo_03.jpeg" alt="Trayvon Robinson 指導打擊">
+          <figcaption>打擊區實際指導，體驗美式營隊訓練方式。</figcaption>
+        </figure>
+        <figure>
+          <img src="photo_04.jpeg" alt="球場訓練實況">
+          <figcaption>在球場中學習比賽觀念與臨場反應。</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap">
+      <h2>READY TO TRAIN?</h2>
+      <p>名額有限，額滿即截止。立即完成報名，和職業球員一起訓練。</p>
+      <div class="buttons" style="justify-content:center">
+        <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfGe0UzhiFdMNaYKfXbW7JRJFDdC_e1-txsDZzxKuCSygeO1g/viewform" target="_blank">立即報名</a>
+        <a class="btn secondary" href="mailto:jim.mysports1999@gmail.com">聯絡我們</a>
+      </div>
+      <div class="note">
+        本活動為吉旻運動主辦之棒球訓練營，球員經歷為事實陳述；活動並非 MLB 官方授權、主辦或贊助活動。
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <h3>吉旻運動 JIMMY SPORTS</h3>
+    <p>From Taiwan to the World</p>
+    <p>Email：<a href="mailto:jim.mysports1999@gmail.com">jim.mysports1999@gmail.com</a></p>
+    <p>© 2026 JIMMY SPORTS All Rights Reserved.</p>
+  </footer>
+
+</body>
+</html>
