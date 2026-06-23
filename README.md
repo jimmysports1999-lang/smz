@@ -414,9 +414,43 @@
     <div class="wrap">
       <h2>READY TO TRAIN?</h2>
       <p>名額有限，額滿即截止。立即完成報名，和職業球員一起訓練。</p>
-      <div class="buttons" style="justify-content:center">
-        <a class="btn primary" href="https://docs.google.com/forms/d/e/1FAIpQLSfGe0UzhiFdMNaYKfXbW7JRJFDdC_e1-txsDZzxKuCSygeO1g/viewform" target="_blank">立即報名</a>
-        <a class="btn secondary" href="mailto:jim.mysports1999@gmail.com">聯絡我們</a>
+      <div class="buttons" style="justify-content:center;gap:15px;flex-wrap:wrap">
+
+          <!-- 報名 -->
+          <a class="btn primary"
+             href="https://docs.google.com/forms/d/e/1FAIpQLSfGe0UzhiFdMNaYKfXbW7JRJFDdC_e1-txsDZzxKuCSygeO1g/viewform"
+             target="_blank">
+              📝 立即報名
+          </a>
+
+          <!-- 綠界付款 -->
+          <a class="btn"
+             href="#"
+             target="_blank"
+             style="
+     background:#005BAC;
+     color:white;
+     border:none;">
+              💳 線上付款
+          </a>
+
+          <!-- LINE -->
+          <a class="btn"
+             href="#"
+             target="_blank"
+             style="
+     background:#06C755;
+     color:white;
+     border:none;">
+              💬 官方LINE
+          </a>
+
+          <!-- Email -->
+          <a class="btn secondary"
+             href="mailto:jim.mysports1999@gmail.com">
+              📧 聯絡我們
+          </a>
+
       </div>
       <div class="note">
         本活動為吉旻運動主辦之棒球訓練營，球員經歷為事實陳述；活動並非 MLB 官方授權、主辦或贊助活動。
@@ -433,3 +467,4 @@
 
 </body>
 </html>
+
