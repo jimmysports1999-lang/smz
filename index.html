@@ -304,6 +304,52 @@ button.tab.active{
 
 
 .coach-showcase-section{background:#111;color:#fff;position:relative;overflow:hidden}.coach-showcase-section:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(245,196,0,.12),transparent 42%);pointer-events:none}.section-label{display:inline-block;color:#111;background:var(--yellow);font-weight:900;letter-spacing:.08em;padding:7px 12px;border-radius:4px;margin-bottom:10px}.coach-showcase-section h2{color:#fff;margin-bottom:6px}.coach-lead{color:#ccc;margin-top:0;margin-bottom:24px}.coach-photo-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;position:relative}.coach-card-photo{background:#181818;border:1px solid #3a3a3a;overflow:hidden;min-width:0}.coach-photo-wrap{aspect-ratio:4/5;overflow:hidden;background:#222}.coach-photo{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease}.coach-card-photo:hover .coach-photo{transform:scale(1.035)}.coach-info{padding:14px 12px 16px;position:relative;border-top:4px solid var(--yellow);min-height:150px}.coach-index{position:absolute;right:10px;top:9px;font-size:30px;font-weight:900;color:rgba(245,196,0,.16)}.coach-info h3{margin:0 0 9px;font-size:18px;line-height:1.15;color:#fff;position:relative}.coach-role{display:inline-block;background:var(--yellow);color:#111;font-size:12px;font-weight:900;padding:5px 8px;margin-bottom:9px}.coach-level{font-size:12px;line-height:1.5;color:#cfcfcf}@media(max-width:1100px){.coach-photo-grid{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.coach-photo-grid{grid-template-columns:repeat(2,1fr)}.coach-info{min-height:145px}.coach-info h3{font-size:16px}}
+
+.quick-links{
+  padding:34px 20px 44px;
+  background:#0e0e0e;
+}
+.quick-links .wrap{
+  max-width:1180px;
+  margin:auto;
+}
+.quick-links h2{
+  color:#fff;
+  font-size:28px;
+  margin:0 0 18px;
+  padding-left:14px;
+  border-left:7px solid var(--yellow);
+}
+.quick-link-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.quick-link-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:74px;
+  padding:16px 18px;
+  background:var(--yellow);
+  color:#111;
+  text-decoration:none;
+  font-weight:900;
+  font-size:17px;
+  text-align:center;
+  border-radius:14px;
+  border:2px solid var(--yellow);
+  transition:.2s ease;
+}
+.quick-link-btn:hover{
+  background:#fff;
+  border-color:#fff;
+  transform:translateY(-2px);
+}
+@media(max-width:700px){
+  .quick-link-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -649,6 +695,52 @@ button.tab.active{
 
 <style>
 .register-fab{position:fixed;right:24px;bottom:24px;z-index:999;background:#f6c400;color:#111;border:0;border-radius:999px;padding:16px 28px;font-size:18px;font-weight:900;box-shadow:0 10px 30px rgba(0,0,0,.35);cursor:pointer}.register-cta{max-width:1100px;margin:34px auto 18px;padding:0 20px}.register-cta button{width:100%;background:#f6c400;color:#111;border:0;border-radius:14px;padding:20px;font-size:22px;font-weight:900;cursor:pointer}.reg-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;overflow:auto;padding:28px 16px}.reg-modal.open{display:block}.reg-card{max-width:760px;margin:20px auto;background:#111;color:#fff;border:1px solid #3a3a3a;border-radius:18px;padding:26px;box-shadow:0 20px 60px rgba(0,0,0,.5)}.reg-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.reg-head h2{margin:0;color:#f6c400}.reg-close{background:none;border:0;color:#fff;font-size:32px;cursor:pointer}.reg-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.reg-field{display:flex;flex-direction:column;gap:7px}.reg-field.full{grid-column:1/-1}.reg-field label{font-weight:800}.reg-field input,.reg-field select,.reg-field textarea{width:100%;box-sizing:border-box;background:#1d1d1d;color:#fff;border:1px solid #555;border-radius:9px;padding:12px;font-size:16px}.reg-field textarea{min-height:90px;resize:vertical}.reg-check{grid-column:1/-1;background:#1b1b1b;padding:14px;border-radius:10px;font-size:14px;line-height:1.6}.reg-submit{grid-column:1/-1;background:#f6c400;color:#111;border:0;border-radius:10px;padding:15px;font-size:18px;font-weight:900;cursor:pointer}.reg-note{color:#bbb;font-size:13px;line-height:1.6;margin-top:12px}@media(max-width:650px){.reg-grid{grid-template-columns:1fr}.reg-field.full,.reg-check,.reg-submit{grid-column:1}.register-fab{right:14px;bottom:14px;padding:14px 20px}}
+
+.quick-links{
+  padding:34px 20px 44px;
+  background:#0e0e0e;
+}
+.quick-links .wrap{
+  max-width:1180px;
+  margin:auto;
+}
+.quick-links h2{
+  color:#fff;
+  font-size:28px;
+  margin:0 0 18px;
+  padding-left:14px;
+  border-left:7px solid var(--yellow);
+}
+.quick-link-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.quick-link-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:74px;
+  padding:16px 18px;
+  background:var(--yellow);
+  color:#111;
+  text-decoration:none;
+  font-weight:900;
+  font-size:17px;
+  text-align:center;
+  border-radius:14px;
+  border:2px solid var(--yellow);
+  transition:.2s ease;
+}
+.quick-link-btn:hover{
+  background:#fff;
+  border-color:#fff;
+  transform:translateY(-2px);
+}
+@media(max-width:700px){
+  .quick-link-grid{grid-template-columns:1fr}
+}
+
 </style>
 <div class="register-cta"><button type="button" onclick="openReg()">立即報名｜REGISTER NOW</button></div>
 <button class="register-fab" type="button" onclick="openReg()">立即報名</button>
@@ -689,6 +781,24 @@ document.getElementById('regModal').addEventListener('click',e=>{if(e.target.id=
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeReg()});
 </script>
 
+
+<section class="quick-links">
+  <div class="wrap">
+    <h2>加入我們｜JOIN US</h2>
+    <div class="quick-link-grid">
+      <a class="quick-link-btn" href="https://lin.ee/OG8KFOfx" target="_blank" rel="noopener noreferrer">
+        加入高雄塔卡鷗（社區）俱樂部
+      </a>
+      <a class="quick-link-btn" href="https://lin.ee/zsNvsda" target="_blank" rel="noopener noreferrer">
+        加入海外打球團
+      </a>
+      <a class="quick-link-btn" href="https://lin.ee/zsNvsda" target="_blank" rel="noopener noreferrer">
+        聯繫我們
+      </a>
+    </div>
+  </div>
+</section>
+
 <footer class="footer">
   JIMMYSPORTS／吉旻運動｜2027 USA × JAPAN International Baseball Winter Camp
 </footer>
@@ -718,6 +828,52 @@ document.querySelectorAll('.tab').forEach(btn=>{
 </section>
 <style>
 .logo-slot{min-height:110px;border:1px dashed rgba(245,184,0,.55);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#777;background:rgba(255,255,255,.025);font:700 13px/1 Arial,sans-serif;letter-spacing:2px}
+
+.quick-links{
+  padding:34px 20px 44px;
+  background:#0e0e0e;
+}
+.quick-links .wrap{
+  max-width:1180px;
+  margin:auto;
+}
+.quick-links h2{
+  color:#fff;
+  font-size:28px;
+  margin:0 0 18px;
+  padding-left:14px;
+  border-left:7px solid var(--yellow);
+}
+.quick-link-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+.quick-link-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:74px;
+  padding:16px 18px;
+  background:var(--yellow);
+  color:#111;
+  text-decoration:none;
+  font-weight:900;
+  font-size:17px;
+  text-align:center;
+  border-radius:14px;
+  border:2px solid var(--yellow);
+  transition:.2s ease;
+}
+.quick-link-btn:hover{
+  background:#fff;
+  border-color:#fff;
+  transform:translateY(-2px);
+}
+@media(max-width:700px){
+  .quick-link-grid{grid-template-columns:1fr}
+}
+
 </style>
 
 </body>
