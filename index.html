@@ -1665,7 +1665,8 @@ input,select,textarea{background:#fff!important;color:#082b50!important;border-c
     <div aria-hidden="true" class="reg-modal" id="regModal">
         <div class="reg-card">
             <div class="reg-head"><div><h2>2027 美・日職業春訓式棒球訓練營｜報名表</h2><div>2027 USA × JAPAN｜PRO WINTER TRAINING CAMP</div></div><button class="reg-close" onclick="closeReg()" type="button">×</button></div>
-            <form action="https://script.google.com/macros/s/AKfycbxuCdJ2z0X1Pe50Z9GLSRJFq7zR-hnwZ-jXlWty08lNX863l1LaoT-ROwHjfGvsaQ4p/exec" class="reg-grid" method="POST" id="campRegistrationForm">
+            <form action="https://script.google.com/macros/s/AKfycbxuCdJ2z0X1Pe50Z9GLSRJFq7zR-hnwZ-jXlWty08lNX863l1LaoT-ROwHjfGvsaQ4p/exec" class="reg-grid" method="POST" id="campRegistrationForm" target="registrationResultFrame">
+<input type="hidden" name="submission_token" id="registrationSubmissionToken">
                 <input name="_subject" type="hidden" value="2027 美日職業春訓式棒球訓練營｜新報名資料">
                 <input name="_template" type="hidden" value="table">
                 
@@ -1845,7 +1846,15 @@ input,select,textarea{background:#fff!important;color:#082b50!important;border-c
                 
 <button class="submit-btn payment-next-yellow" style="margin-top:12px;" type="button" onclick="openRegistrationReview()">下一步：確認報名資料</button>
             <input type="hidden" name="報名人數" id="calculatedParticipantCount"><input type="hidden" name="應繳總額" id="calculatedTotalAmount"><input type="hidden" name="報名費用明細" id="calculatedFeeDetails"><input type="hidden" name="付款方式" value="現金匯款"><input type="hidden" name="匯款帳戶後五碼" id="submittedBankLast5"></form>
-            <div class="reg-note">送出後，報名資料將寄送至主辦單位信箱。送出報名不代表完成繳費或保證名額，實際錄取／付款方式以主辦單位後續通知為準。</div>
+            <div class="reg-note">送出後，報名資料將儲存至主辦單位的報名系統。送出報名不代表完成繳費或保證名額，實際錄取／付款方式以主辦單位後續通知為準。</div>
+            <iframe id="registrationResultFrame" name="registrationResultFrame" title="報名處理結果" style="display:none"></iframe>
+            <div id="registrationSubmitStatus" role="status" aria-live="polite" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(4,13,24,.94);align-items:center;justify-content:center;padding:22px;color:white;text-align:center">
+              <div style="max-width:480px;width:100%;padding:36px 26px;border:1px solid #e4b900;border-radius:16px;background:#101b2c">
+                <h2 id="registrationStatusTitle" style="color:#f5c400;font-size:26px;margin:0 0 15px">正在送出報名資料…</h2>
+                <p id="registrationStatusMessage" style="line-height:1.8;margin:0 0 22px">請稍候，確認資料儲存成功前請勿關閉頁面。</p>
+                <button type="button" id="registrationStatusClose" style="display:none;border:0;border-radius:8px;background:#f5c400;color:#111;font-size:16px;font-weight:bold;padding:12px 28px" onclick="document.getElementById('registrationSubmitStatus').style.display='none'">關閉</button>
+              </div>
+            </div>
         </div>
     </div>
     <script>function openReg() { document.getElementById('regModal').classList.add('open'); document.getElementById('regModal').setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden' }
@@ -2585,10 +2594,42 @@ function finalSubmitRegistration(){
     alert('找不到報名表，請重新整理頁面後再試。');
     return;
   }
+  if(window.registrationSubmitting) return;
   document.getElementById('submittedBankLast5').value=document.getElementById('bankLast5').value.trim();
+  window.registrationSubmissionToken = 'reg-' + Date.now() + '-' + Math.random().toString(36).slice(2);
+  document.getElementById('registrationSubmissionToken').value=window.registrationSubmissionToken;
+  window.registrationSubmitting = true;
+  showRegistrationStatus('正在送出報名資料…','請稍候，確認資料儲存成功前請勿關閉頁面。',false);
   if(typeof form.requestSubmit==='function') form.requestSubmit();
   else form.submit();
+  // 網路中斷或 Google 無回應時，不會誤顯示報名成功。
+  clearTimeout(window.registrationTimeout);
+  window.registrationTimeout = setTimeout(function(){
+    if(window.registrationSubmitting){
+      window.registrationSubmitting=false;
+      showRegistrationStatus('尚未確認報名成功','伺服器未及時回覆。請先聯絡主辦單位確認是否收到資料，避免重複報名。',true);
+    }
+  },45000);
 }
+function showRegistrationStatus(title,message,closable){
+  document.getElementById('registrationStatusTitle').textContent=title;
+  document.getElementById('registrationStatusMessage').textContent=message;
+  document.getElementById('registrationStatusClose').style.display=closable?'inline-block':'none';
+  document.getElementById('registrationSubmitStatus').style.display='flex';
+}
+window.addEventListener('message',function(event){
+  const frame=document.getElementById('registrationResultFrame');
+  if(!frame || event.source!==frame.contentWindow) return;
+  const data=event.data;
+  if(!data || data.type!=='camp-registration-result' || data.token!==window.registrationSubmissionToken || !window.registrationSubmitting) return;
+  clearTimeout(window.registrationTimeout);
+  window.registrationSubmitting=false;
+  if(data.success){
+    showRegistrationStatus('報名資料已成功送出！','我們已收到並儲存您的報名資料。送出不代表完成繳費或保證名額，後續請依主辦單位通知辦理。',true);
+  } else {
+    showRegistrationStatus('報名資料尚未成功儲存','請稍後重試，或聯絡主辦單位確認。',true);
+  }
+});
 
 
 document.getElementById('paymentStep').addEventListener('click',function(e){
