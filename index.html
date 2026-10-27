@@ -1848,7 +1848,7 @@ input,select,textarea{background:#fff!important;color:#082b50!important;border-c
             <input type="hidden" name="報名人數" id="calculatedParticipantCount"><input type="hidden" name="應繳總額" id="calculatedTotalAmount"><input type="hidden" name="報名費用明細" id="calculatedFeeDetails"><input type="hidden" name="付款方式" value="現金匯款"><input type="hidden" name="匯款帳戶後五碼" id="submittedBankLast5"></form>
             <div class="reg-note">送出後，報名資料將儲存至主辦單位的報名系統。送出報名不代表完成繳費或保證名額，實際錄取／付款方式以主辦單位後續通知為準。</div>
             <iframe id="registrationResultFrame" name="registrationResultFrame" title="報名處理結果" style="display:none"></iframe>
-            <div id="registrationSubmitStatus" role="status" aria-live="polite" style="display:none;position:fixed;inset:0;z-index:999999;background:rgba(4,13,24,.94);align-items:center;justify-content:center;padding:22px;color:white;text-align:center">
+            <div id="registrationSubmitStatus" role="status" aria-live="polite" style="display:none;position:fixed;inset:0;z-index:2147483647;background:rgba(4,13,24,.94);align-items:center;justify-content:center;padding:22px;color:white;text-align:center">
               <div style="max-width:480px;width:100%;padding:36px 26px;border:1px solid #e4b900;border-radius:16px;background:#101b2c">
                 <h2 id="registrationStatusTitle" style="color:#f5c400;font-size:26px;margin:0 0 15px">正在送出報名資料…</h2>
                 <p id="registrationStatusMessage" style="line-height:1.8;margin:0 0 22px">請稍候，確認資料儲存成功前請勿關閉頁面。</p>
@@ -1859,7 +1859,7 @@ input,select,textarea{background:#fff!important;color:#082b50!important;border-c
                   <button type="button" id="registrationVerifiedManually" onclick="confirmRegistrationFromGoogleResult()" style="display:block;margin:14px auto 0;border:1px solid #f5c400;border-radius:8px;background:transparent;color:#f5c400;font-weight:bold;padding:10px 14px;cursor:pointer">我已在 Google 查到 saved:true</button>
                   <p style="font-size:12px;color:#ccd5df">查詢頁顯示 saved:true 代表已收到；saved:false 代表尚未查到。請勿因畫面等待而重複送出。</p>
                 </div>
-                <button type="button" id="registrationStatusClose" style="display:none;border:0;border-radius:8px;background:#f5c400;color:#111;font-size:16px;font-weight:bold;padding:12px 28px" onclick="document.getElementById('registrationSubmitStatus').style.display='none'">關閉</button>
+                <button type="button" id="registrationStatusClose" style="display:none;border:0;border-radius:8px;background:#f5c400;color:#111;font-size:16px;font-weight:bold;padding:12px 28px" onclick="document.getElementById('registrationSubmitStatus').style.display='none';document.body.style.overflow=''">關閉</button>
               </div>
             </div>
         </div>
@@ -2636,6 +2636,18 @@ function finalSubmitRegistration(){
   }
 }
 function showRegistrationStatus(title,message,closable){
+  // Move the confirmation overlay to <body>: it must not be trapped inside
+  // the registration modal's stacking context beneath the payment overlay.
+  const status=document.getElementById('registrationSubmitStatus');
+  if(status && status.parentElement!==document.body) document.body.appendChild(status);
+  const success=title.indexOf('報名資料已成功送出')!==-1;
+  if(success){
+    const payment=document.getElementById('paymentStep');
+    if(payment) payment.classList.remove('open');
+    const review=document.getElementById('registrationReview');
+    if(review) review.hidden=true;
+    document.body.style.overflow='hidden';
+  }
   document.getElementById('registrationStatusTitle').textContent=title;
   document.getElementById('registrationStatusMessage').textContent=message;
   document.getElementById('registrationStatusClose').style.display=closable?'inline-block':'none';
@@ -2695,7 +2707,7 @@ function confirmRegistrationFromGoogleResult(){
   window.registrationSubmitting=false;
   showRegistrationStatus('報名資料已成功送出！','你已透過 Google 查詢確認這筆報名已儲存。送出不代表完成繳費或保證名額，後續請依主辦單位通知辦理。',true);
   const tools=document.getElementById('registrationReceiptTools');if(tools)tools.style.display='none';
-  const payment=document.getElementById('paymentStepOverlay');if(payment)payment.classList.remove('open');
+  const payment=document.getElementById('paymentStep');if(payment)payment.classList.remove('open');
 }
 function manualRegistrationReceiptCheck(){
   const token=window.registrationSubmissionToken;
