@@ -1852,6 +1852,12 @@ input,select,textarea{background:#fff!important;color:#082b50!important;border-c
               <div style="max-width:480px;width:100%;padding:36px 26px;border:1px solid #e4b900;border-radius:16px;background:#101b2c">
                 <h2 id="registrationStatusTitle" style="color:#f5c400;font-size:26px;margin:0 0 15px">正在送出報名資料…</h2>
                 <p id="registrationStatusMessage" style="line-height:1.8;margin:0 0 22px">請稍候，確認資料儲存成功前請勿關閉頁面。</p>
+                <div id="registrationReceiptTools" style="display:none;margin:0 0 18px;font-size:14px;line-height:1.8">
+                  <p style="margin:0 0 10px">若畫面持續等待，可直接向 Google 查詢這筆報名是否已儲存；不會再次送出資料。</p>
+                  <button type="button" id="registrationReceiptRetry" onclick="manualRegistrationReceiptCheck()" style="border:1px solid #f5c400;border-radius:8px;background:#f5c400;color:#111;font-weight:bold;padding:10px 14px;cursor:pointer">重新確認報名結果</button>
+                  <a id="registrationReceiptDirect" href="#" target="_blank" rel="noopener noreferrer" style="display:block;color:#f5c400;margin-top:10px;text-decoration:underline">直接查看 Google 儲存結果</a>
+                  <p style="font-size:12px;color:#ccd5df">查詢頁顯示 saved:true 代表已收到；saved:false 代表尚未查到。請勿因畫面等待而重複送出。</p>
+                </div>
                 <button type="button" id="registrationStatusClose" style="display:none;border:0;border-radius:8px;background:#f5c400;color:#111;font-size:16px;font-weight:bold;padding:12px 28px" onclick="document.getElementById('registrationSubmitStatus').style.display='none'">關閉</button>
               </div>
             </div>
@@ -2647,7 +2653,7 @@ function startRegistrationReceiptCheck(token){
   const endpoint=form.action;
   function check(){
     if(!window.registrationSubmitting || window.registrationSubmissionToken!==token) return;
-    if(++receiptCheckCount>20) return;
+    if(++receiptCheckCount>20){ window.registrationSubmitting=false; showRegistrationStatus('尚未能自動確認','請使用下方「直接查看 Google 儲存結果」連結確認；看到 saved:true 即表示這筆報名已儲存。請勿重複送出。',true); return; }
     const callbackName='campReceipt_'+Date.now()+'_'+Math.random().toString(36).slice(2);
     const script=document.createElement('script');
     let finished=false;
@@ -2669,7 +2675,22 @@ function startRegistrationReceiptCheck(token){
     document.head.appendChild(script);
     setTimeout(function(){ if(!finished){cleanup(); if(window.registrationSubmitting) receiptCheckTimer=setTimeout(check,2500);}},6000);
   }
+  // 即使瀏覽器擋下自動查詢，仍保留可人工確認的唯讀查詢連結。
+  const tools=document.getElementById('registrationReceiptTools');
+  const direct=document.getElementById('registrationReceiptDirect');
+  if(tools && direct){
+    tools.style.display='block';
+    direct.href=endpoint+'?action=receipt&token='+encodeURIComponent(token)+'&callback=campReceipt_manual';
+  }
   receiptCheckTimer=setTimeout(check,1500);
+}
+function manualRegistrationReceiptCheck(){
+  const token=window.registrationSubmissionToken;
+  if(!token){alert('沒有可查詢的報名識別碼。');return;}
+  // 使用同一個已證實可用的 JSONP API，絕不重送表單。
+  window.registrationSubmitting=true;
+  startRegistrationReceiptCheck(token);
+  showRegistrationStatus('正在重新確認報名結果…','正在查詢 Google 試算表，這個操作不會再次送出報名。',true);
 }
 window.addEventListener('message',function(event){
   const frame=document.getElementById('registrationResultFrame');
