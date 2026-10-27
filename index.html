@@ -2611,6 +2611,7 @@ function finalSubmitRegistration(){
     window.registrationSubmissionToken='reg-'+Date.now()+'-'+Math.random().toString(36).slice(2);
     document.getElementById('registrationSubmissionToken').value=window.registrationSubmissionToken;
     window.registrationSubmitting=true;
+    startRegistrationReceiptCheck(window.registrationSubmissionToken);
     showRegistrationStatus('正在送出報名資料…','請稍候，確認資料儲存成功前請勿關閉頁面。',false);
     // 使用原生提交，避開再次觸發驗證造成的靜默中止；上面已先檢查欄位。
     HTMLFormElement.prototype.submit.call(form);
@@ -2620,7 +2621,7 @@ function finalSubmitRegistration(){
         window.registrationSubmitting=false;
         showRegistrationStatus('尚未確認報名成功','伺服器未及時回覆。請先檢查 Google 試算表是否收到資料，再決定是否重送，避免重複報名。',true);
       }
-    },45000);
+    },60000);
   } catch(error){
     window.registrationSubmitting=false;
     console.error('報名送出失敗',error);
@@ -2633,13 +2634,51 @@ function showRegistrationStatus(title,message,closable){
   document.getElementById('registrationStatusClose').style.display=closable?'inline-block':'none';
   document.getElementById('registrationSubmitStatus').style.display='flex';
 }
+// 跨來源的 Google iframe 訊息可能被手機瀏覽器阻擋；改由 JSONP 查詢已寫入的提交識別碼。
+let receiptCheckTimer = null;
+let receiptCheckCount = 0;
+function stopRegistrationReceiptCheck(){
+  if(receiptCheckTimer){ clearTimeout(receiptCheckTimer); receiptCheckTimer=null; }
+}
+function startRegistrationReceiptCheck(token){
+  stopRegistrationReceiptCheck();
+  receiptCheckCount=0;
+  const form=document.getElementById('campRegistrationForm');
+  const endpoint=form.action;
+  function check(){
+    if(!window.registrationSubmitting || window.registrationSubmissionToken!==token) return;
+    if(++receiptCheckCount>20) return;
+    const callbackName='campReceipt_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const script=document.createElement('script');
+    let finished=false;
+    const cleanup=()=>{ if(finished) return; finished=true; delete window[callbackName]; script.remove(); };
+    window[callbackName]=function(result){
+      cleanup();
+      if(!window.registrationSubmitting || window.registrationSubmissionToken!==token) return;
+      if(result && result.saved===true){
+        clearTimeout(window.registrationTimeout);
+        stopRegistrationReceiptCheck();
+        window.registrationSubmitting=false;
+        showRegistrationStatus('報名資料已成功送出！','Google 試算表已確認收到您的報名資料。送出不代表繳費完成或保證名額，後續請依主辦單位通知辦理。',true);
+      }else{
+        receiptCheckTimer=setTimeout(check,2500);
+      }
+    };
+    script.onerror=function(){ cleanup(); receiptCheckTimer=setTimeout(check,2500); };
+    script.src=endpoint+'?action=receipt&token='+encodeURIComponent(token)+'&callback='+encodeURIComponent(callbackName)+'&_='+Date.now();
+    document.head.appendChild(script);
+    setTimeout(function(){ if(!finished){cleanup(); if(window.registrationSubmitting) receiptCheckTimer=setTimeout(check,2500);}},6000);
+  }
+  receiptCheckTimer=setTimeout(check,1500);
+}
 window.addEventListener('message',function(event){
   const frame=document.getElementById('registrationResultFrame');
   // Apps Script HtmlService 可能透過 Google 的巢狀 iframe 回傳訊息，不能限定直接 frame 來源。
-  if(!frame || !/^https:\/\/(?:[a-z0-9-]+\.)*(?:google\.com|googleusercontent\.com)$/.test(event.origin)) return;
+  if(!frame) return; // 以不可預測的提交識別碼核對回覆；Google iframe 可能使用 null origin。
   const data=event.data;
   if(!data || data.type!=='camp-registration-result' || data.token!==window.registrationSubmissionToken || !window.registrationSubmitting) return;
   clearTimeout(window.registrationTimeout);
+  stopRegistrationReceiptCheck();
   window.registrationSubmitting=false;
   if(data.success){
     showRegistrationStatus('報名資料已成功送出！','我們已收到並儲存您的報名資料。送出不代表完成繳費或保證名額，後續請依主辦單位通知辦理。',true);
