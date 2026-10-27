@@ -1856,6 +1856,7 @@ input,select,textarea{background:#fff!important;color:#082b50!important;border-c
                   <p style="margin:0 0 10px">若畫面持續等待，可直接向 Google 查詢這筆報名是否已儲存；不會再次送出資料。</p>
                   <button type="button" id="registrationReceiptRetry" onclick="manualRegistrationReceiptCheck()" style="border:1px solid #f5c400;border-radius:8px;background:#f5c400;color:#111;font-weight:bold;padding:10px 14px;cursor:pointer">重新確認報名結果</button>
                   <a id="registrationReceiptDirect" href="#" target="_blank" rel="noopener noreferrer" style="display:block;color:#f5c400;margin-top:10px;text-decoration:underline">直接查看 Google 儲存結果</a>
+                  <button type="button" id="registrationVerifiedManually" onclick="confirmRegistrationFromGoogleResult()" style="display:block;margin:14px auto 0;border:1px solid #f5c400;border-radius:8px;background:transparent;color:#f5c400;font-weight:bold;padding:10px 14px;cursor:pointer">我已在 Google 查到 saved:true</button>
                   <p style="font-size:12px;color:#ccd5df">查詢頁顯示 saved:true 代表已收到；saved:false 代表尚未查到。請勿因畫面等待而重複送出。</p>
                 </div>
                 <button type="button" id="registrationStatusClose" style="display:none;border:0;border-radius:8px;background:#f5c400;color:#111;font-size:16px;font-weight:bold;padding:12px 28px" onclick="document.getElementById('registrationSubmitStatus').style.display='none'">關閉</button>
@@ -2599,7 +2600,7 @@ function finalSubmitRegistration(){
     const form=document.getElementById('campRegistrationForm');
     if(!form){ alert('找不到報名表，請重新整理後再試。'); return; }
     if(window.registrationSubmitting){
-      alert('報名資料正在處理中，請勿重複送出。');
+      showRegistrationStatus('報名資料確認中','已送出資料，請勿再次送出。可在此查詢 Google 儲存結果。',true);
       return;
     }
     // 在鎖定按鈕前先檢查欄位，避免 requestSubmit 被瀏覽器攔截而沒有回饋。
@@ -2617,15 +2618,15 @@ function finalSubmitRegistration(){
     window.registrationSubmissionToken='reg-'+Date.now()+'-'+Math.random().toString(36).slice(2);
     document.getElementById('registrationSubmissionToken').value=window.registrationSubmissionToken;
     window.registrationSubmitting=true;
+    showRegistrationStatus('正在送出報名資料…','正在等待 Google 確認。若持續等待，請點選下方的查詢連結，不要再次送出。',true);
     startRegistrationReceiptCheck(window.registrationSubmissionToken);
-    showRegistrationStatus('正在送出報名資料…','請稍候，確認資料儲存成功前請勿關閉頁面。',false);
     // 使用原生提交，避開再次觸發驗證造成的靜默中止；上面已先檢查欄位。
     HTMLFormElement.prototype.submit.call(form);
     clearTimeout(window.registrationTimeout);
     window.registrationTimeout=setTimeout(function(){
       if(window.registrationSubmitting){
         window.registrationSubmitting=false;
-        showRegistrationStatus('尚未確認報名成功','伺服器未及時回覆。請先檢查 Google 試算表是否收到資料，再決定是否重送，避免重複報名。',true);
+        showRegistrationStatus('尚未確認報名成功','伺服器未及時回覆。請使用「直接查看 Google 儲存結果」查詢這筆報名；請勿重複送出。',true);
       }
     },60000);
   } catch(error){
@@ -2666,6 +2667,7 @@ function startRegistrationReceiptCheck(token){
         stopRegistrationReceiptCheck();
         window.registrationSubmitting=false;
         showRegistrationStatus('報名資料已成功送出！','Google 試算表已確認收到您的報名資料。送出不代表繳費完成或保證名額，後續請依主辦單位通知辦理。',true);
+        const receiptTools=document.getElementById('registrationReceiptTools'); if(receiptTools)receiptTools.style.display='none';
       }else{
         receiptCheckTimer=setTimeout(check,2500);
       }
@@ -2683,6 +2685,17 @@ function startRegistrationReceiptCheck(token){
     direct.href=endpoint+'?action=receipt&token='+encodeURIComponent(token)+'&callback=campReceipt_manual';
   }
   receiptCheckTimer=setTimeout(check,1500);
+}
+// 手動確認僅在使用者自行看見 Google 回傳 saved:true 後執行，絕不重送表單。
+function confirmRegistrationFromGoogleResult(){
+  if(!window.registrationSubmissionToken){alert('目前沒有待確認的報名紀錄。');return;}
+  if(!window.confirm('請確認：你已點開「直接查看 Google 儲存結果」，並看到 saved:true。\n\n若顯示 saved:false 或無法開啟，請按「取消」，不要視為報名成功。')) return;
+  clearTimeout(window.registrationTimeout);
+  stopRegistrationReceiptCheck();
+  window.registrationSubmitting=false;
+  showRegistrationStatus('報名資料已成功送出！','你已透過 Google 查詢確認這筆報名已儲存。送出不代表完成繳費或保證名額，後續請依主辦單位通知辦理。',true);
+  const tools=document.getElementById('registrationReceiptTools');if(tools)tools.style.display='none';
+  const payment=document.getElementById('paymentStepOverlay');if(payment)payment.classList.remove('open');
 }
 function manualRegistrationReceiptCheck(){
   const token=window.registrationSubmissionToken;
