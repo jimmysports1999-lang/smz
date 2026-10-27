@@ -2585,31 +2585,47 @@ function showPaymentConfirmed(){
 }
 
 function finalSubmitRegistration(){
-  if(!paymentVerified){
-    alert('請先完成付款資訊確認。');
-    return;
-  }
-  const form=document.getElementById('campRegistrationForm');
-  if(!form){
-    alert('找不到報名表，請重新整理頁面後再試。');
-    return;
-  }
-  if(window.registrationSubmitting) return;
-  document.getElementById('submittedBankLast5').value=document.getElementById('bankLast5').value.trim();
-  window.registrationSubmissionToken = 'reg-' + Date.now() + '-' + Math.random().toString(36).slice(2);
-  document.getElementById('registrationSubmissionToken').value=window.registrationSubmissionToken;
-  window.registrationSubmitting = true;
-  showRegistrationStatus('正在送出報名資料…','請稍候，確認資料儲存成功前請勿關閉頁面。',false);
-  if(typeof form.requestSubmit==='function') form.requestSubmit();
-  else form.submit();
-  // 網路中斷或 Google 無回應時，不會誤顯示報名成功。
-  clearTimeout(window.registrationTimeout);
-  window.registrationTimeout = setTimeout(function(){
-    if(window.registrationSubmitting){
-      window.registrationSubmitting=false;
-      showRegistrationStatus('尚未確認報名成功','伺服器未及時回覆。請先聯絡主辦單位確認是否收到資料，避免重複報名。',true);
+  try {
+    if(!paymentVerified){
+      alert('請先完成付款資訊確認。');
+      return;
     }
-  },45000);
+    const form=document.getElementById('campRegistrationForm');
+    if(!form){ alert('找不到報名表，請重新整理後再試。'); return; }
+    if(window.registrationSubmitting){
+      alert('報名資料正在處理中，請勿重複送出。');
+      return;
+    }
+    // 在鎖定按鈕前先檢查欄位，避免 requestSubmit 被瀏覽器攔截而沒有回饋。
+    const invalid=Array.from(form.elements).find(function(el){
+      return el.willValidate && !el.checkValidity();
+    });
+    if(invalid){
+      alert('還有必填資料尚未填妥，請返回報名表確認。');
+      closePaymentStep();
+      invalid.scrollIntoView({behavior:'smooth',block:'center'});
+      try { invalid.focus(); invalid.reportValidity(); } catch (_) {}
+      return;
+    }
+    document.getElementById('submittedBankLast5').value=document.getElementById('bankLast5').value.trim();
+    window.registrationSubmissionToken='reg-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+    document.getElementById('registrationSubmissionToken').value=window.registrationSubmissionToken;
+    window.registrationSubmitting=true;
+    showRegistrationStatus('正在送出報名資料…','請稍候，確認資料儲存成功前請勿關閉頁面。',false);
+    // 使用原生提交，避開再次觸發驗證造成的靜默中止；上面已先檢查欄位。
+    HTMLFormElement.prototype.submit.call(form);
+    clearTimeout(window.registrationTimeout);
+    window.registrationTimeout=setTimeout(function(){
+      if(window.registrationSubmitting){
+        window.registrationSubmitting=false;
+        showRegistrationStatus('尚未確認報名成功','伺服器未及時回覆。請先檢查 Google 試算表是否收到資料，再決定是否重送，避免重複報名。',true);
+      }
+    },45000);
+  } catch(error){
+    window.registrationSubmitting=false;
+    console.error('報名送出失敗',error);
+    showRegistrationStatus('報名表送出發生問題','尚未確認資料儲存成功。請聯絡主辦單位，或重新整理頁面後再試。',true);
+  }
 }
 function showRegistrationStatus(title,message,closable){
   document.getElementById('registrationStatusTitle').textContent=title;
