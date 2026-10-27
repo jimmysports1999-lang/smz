@@ -2635,7 +2635,8 @@ function showRegistrationStatus(title,message,closable){
 }
 window.addEventListener('message',function(event){
   const frame=document.getElementById('registrationResultFrame');
-  if(!frame || event.source!==frame.contentWindow) return;
+  // Apps Script HtmlService 可能透過 Google 的巢狀 iframe 回傳訊息，不能限定直接 frame 來源。
+  if(!frame || !/^https:\/\/(?:[a-z0-9-]+\.)*(?:google\.com|googleusercontent\.com)$/.test(event.origin)) return;
   const data=event.data;
   if(!data || data.type!=='camp-registration-result' || data.token!==window.registrationSubmissionToken || !window.registrationSubmitting) return;
   clearTimeout(window.registrationTimeout);
