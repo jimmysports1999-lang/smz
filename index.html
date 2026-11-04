@@ -108,6 +108,19 @@ a{color:#1b1720!important;-webkit-text-fill-color:#1b1720!important}
      },true);
    }
    if(!doc)return;
+   // 報名表顯示時隱藏右下角的統一報名浮動按鈕，關閉後自動恢復。
+   if(which==='winter'){
+     const modal=doc.getElementById('regModal');
+     const floating=document.getElementById('unified-register');
+     if(modal && floating){
+       const syncFloating=()=>{
+         const isOpen=modal.classList.contains('open') && modal.getAttribute('aria-hidden')!=='true';
+         floating.hidden=isOpen;
+       };
+       new MutationObserver(syncFloating).observe(modal,{attributes:true,attributeFilter:['class','aria-hidden']});
+       syncFloating();
+     }
+   }
    doc.addEventListener('click',function(e){
      const link=e.target.closest('a[href]');
      if(!link)return;
